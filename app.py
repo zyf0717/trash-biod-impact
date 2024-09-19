@@ -4,7 +4,6 @@ import plotly.express as px
 import plotly.graph_objects as go
 
 from shiny import App, Inputs, Outputs, Session, reactive, render, ui
-from shiny.types import FileInfo
 from shinywidgets import output_widget, render_widget
 
 raw_data = pd.read_csv("test_data.csv")
@@ -15,7 +14,7 @@ app_ui = ui.page_fluid(
         ui.card(output_widget("typesOfTrashPlot")),
         ui.card(output_widget("trashInLocationPlot")),
         ui.card(output_widget("biodImpactPlot")),
-        ui.card(ui.output_data_frame("toxicityOnBiod"),),
+        ui.card(ui.output_data_frame("toxicityOnBiod")),
         col_widths=[12, 6, 6, 6, 6]
     )
 )
@@ -25,21 +24,21 @@ def server(input: Inputs, output: Outputs, session: Session):
     @render_widget
     def typesOfTrashPlot():
         df = raw_data.copy()
-        fig = px.histogram(df, x="Type of Trash", title="Types of Trash")
+        fig = px.histogram(df, x="Trash", title="Types of Trash", template="seaborn")
         return fig
 
 
     @render_widget
     def trashInLocationPlot():
         df = raw_data.copy()
-        fig = px.histogram(df, x="Location", color="Type of Trash", title="Trash in Location")
+        fig = px.histogram(df, x="Location", color="Trash", title="Trash in Location", template="seaborn")
         return fig
 
     @render_widget
     def biodImpactPlot():
         df = raw_data.copy()
-        df = df.groupby(['Location'])['Biodiversity Impact'].sum().reset_index()
-        fig = px.bar(df, x="Location", y = "Biodiversity Impact", title="Impact on Biodiversity")
+        df = df.groupby(['Location'])['Toxicity'].sum().reset_index()
+        fig = px.bar(df, x="Location", y = "Toxicity", title="Total Toxicity", template="seaborn")
         return fig
     
     @render.data_frame
