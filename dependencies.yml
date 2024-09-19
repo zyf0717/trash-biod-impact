@@ -4,8 +4,8 @@ channels:
   - defaults
 dependencies:
   - python
-  - conda-forge
   - numpy
   - pandas
   - plotly
-  - conda-forge
+  - shiny
+  - shinywidgets

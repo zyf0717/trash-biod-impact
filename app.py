@@ -40,7 +40,7 @@ def server(input: Inputs, output: Outputs, session: Session):
         df = df.groupby(['Location'])['Toxicity'].sum().reset_index()
         fig = px.bar(df, x="Location", y = "Toxicity", title="Total Toxicity", template="seaborn")
         return fig
-    
+
     @render.data_frame
     def toxicityOnBiod():
         df = raw_data.copy()
@@ -48,7 +48,6 @@ def server(input: Inputs, output: Outputs, session: Session):
             df,
             width = "100%"
         )
-
 
 
 app = App(app_ui, server)
