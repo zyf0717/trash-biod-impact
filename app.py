@@ -9,8 +9,23 @@ from shinywidgets import output_widget, render_widget
 
 ##### Data #####
 
+# Read CSVs
 raw_data_trash = pd.read_csv("test_data_trash.csv")
 raw_data_biod = pd.read_csv("test_data_biod.csv")
+
+# Convert certain columns to categorical
+raw_data_trash['Location'] = raw_data_trash['Location'].astype('category')
+raw_data_trash['Trash'] = raw_data_trash['Trash'].astype('category')
+raw_data_biod['Location'] = raw_data_biod['Location'].astype('category')
+raw_data_biod['Species'] = raw_data_biod['Species'].astype('category')
+
+# Sorted categories for axis sorting if necessary
+locations = set(raw_data_trash['Location'].cat.categories).union(set(raw_data_biod['Location'].cat.categories))
+locations = list(locations).sort()
+trash_types = set(raw_data_trash['Trash'].cat.categories)
+trash_types = list(trash_types).sort()
+species = set(raw_data_biod['Species'].cat.categories)
+species = list(species).sort()
 
 
 ##### UI #####
@@ -18,12 +33,30 @@ raw_data_biod = pd.read_csv("test_data_biod.csv")
 app_ui = ui.page_fluid(
     ui.layout_columns(
         ui.card("Pollution, Toxicity and Biodiversity"),
-        ui.card(output_widget("typesOfTrashPlot")),
-        ui.card(output_widget("trashInLocationPlot")),
-        ui.card(output_widget("toxicityPlot")),
-        ui.card(output_widget("toxicityOnBiodPlot")),
-        ui.card(ui.output_data_frame("toxicityAtLocationTbl")),
-        ui.card(ui.output_data_frame("toxicityOnBiodTbl")),
+        ui.card(
+            ui.card_header("Types of Trash"),
+            output_widget("typesOfTrashPlot")
+        ),
+        ui.card(
+            ui.card_header("Trash at Location"),
+            output_widget("trashAtLocationPlot")
+        ),
+        ui.card(
+            ui.card_header("Total Toxicity"),
+            output_widget("toxicityPlot")
+        ),
+        ui.card(
+            ui.card_header("Toxicity vs Wildlife"),
+            output_widget("toxicityOnBiodPlot")
+        ),
+        ui.card(
+            ui.card_header("Toxicity at Location"),
+            ui.output_data_frame("toxicityAtLocationTbl")
+        ),
+        ui.card(
+            ui.card_header("Toxicity at Location"),
+            ui.output_data_frame("toxicityOnBiodTbl")
+        ),
         col_widths=[12, 6, 6, 6, 6, 6, 6]
     )
 )
@@ -35,24 +68,27 @@ def server(input: Inputs, output: Outputs, session: Session):
     @render_widget
     def typesOfTrashPlot():
         df_trash = raw_data_trash.copy()
+        df_trash = df_trash.sort_values(by=['Trash'])
         fig = px.histogram(
             df_trash,
             x="Trash",
-            title="Types of Trash",
             template="seaborn"
         )
         return fig
 
 
     @render_widget
-    def trashInLocationPlot():
+    def trashAtLocationPlot():
         df_trash = raw_data_trash.copy()
+        df_trash = df_trash.sort_values(by=['Trash'])
         fig = px.histogram(
             df_trash,
             x="Location",
             color="Trash",
-            title="Trash in Location",
             template="seaborn"
+        )
+        fig.update_layout(
+            xaxis={'categoryorder':'category ascending'}
         )
         return fig
 
@@ -60,13 +96,17 @@ def server(input: Inputs, output: Outputs, session: Session):
     @render_widget
     def toxicityPlot():
         df_trash = raw_data_trash.copy()
-        df_trash = df_trash.groupby(['Location'])['Toxicity'].sum().reset_index()
+        df_trash = df_trash.groupby(['Location', 'Trash'], observed=False)['Toxicity'].sum().reset_index()
+        df_trash = df_trash.sort_values(by=['Trash'])
         fig = px.bar(
             df_trash,
             x="Location",
-            y = "Toxicity",
-            title="Total Toxicity",
+            y="Toxicity",
+            color="Trash",
             template="seaborn"
+        )
+        fig.update_layout(
+            xaxis={'categoryorder':'category ascending'}
         )
         return fig
 
@@ -76,8 +116,8 @@ def server(input: Inputs, output: Outputs, session: Session):
         df_trash = raw_data_trash.copy()
         df_biod = raw_data_biod.copy()
 
-        df_trash = df_trash.groupby(['Location'])['Toxicity'].sum().reset_index()
-        df_biod = df_biod.groupby(['Location'])['Quantity'].sum().reset_index()
+        df_trash = df_trash.groupby(['Location'], observed=False)['Toxicity'].sum().reset_index()
+        df_biod = df_biod.groupby(['Location'], observed=False)['Quantity'].sum().reset_index()
 
         df = pd.merge(df_trash, df_biod, on="Location")
 
@@ -86,7 +126,6 @@ def server(input: Inputs, output: Outputs, session: Session):
             x="Toxicity",
             y="Quantity",
             trendline="ols",
-            title="Toxicity vs Wildlife",
             template="seaborn"
         )
 
@@ -95,11 +134,12 @@ def server(input: Inputs, output: Outputs, session: Session):
 
     @render.data_frame
     def toxicityAtLocationTbl():
-        df = raw_data_trash.copy()
-        df = df.groupby(['Location'])['Toxicity'].sum().reset_index()
+        df_trash = raw_data_trash.copy()
+        df_trash = df_trash.groupby(['Location'], observed=False)['Toxicity'].sum().reset_index()
+        df_trash = df_trash.sort_values(by=['Location'])
 
         return render.DataGrid(
-            df,
+            df_trash,
             width = "100%"
         )
 
@@ -109,10 +149,11 @@ def server(input: Inputs, output: Outputs, session: Session):
         df_trash = raw_data_trash.copy()
         df_biod = raw_data_biod.copy()
 
-        df_trash = df_trash.groupby(['Location'])['Toxicity'].sum().reset_index()
-        df_biod = df_biod.groupby(['Location'])['Quantity'].sum().reset_index()
+        df_trash = df_trash.groupby(['Location'], observed=False)['Toxicity'].sum().reset_index()
+        df_biod = df_biod.groupby(['Location'], observed=False)['Quantity'].sum().reset_index()
 
         df = pd.merge(df_trash, df_biod, on="Location")
+        df = df.sort_values(by=['Location'])
 
         return render.DataGrid(
             df,
