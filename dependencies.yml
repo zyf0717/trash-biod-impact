@@ -1,0 +1,11 @@
+name: trash-biod-impact
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python
+  - conda-forge
+  - numpy
+  - pandas
+  - plotly
+  - conda-forge
