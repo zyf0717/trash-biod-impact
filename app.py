@@ -6,8 +6,14 @@ import plotly.graph_objects as go
 from shiny import App, Inputs, Outputs, Session, reactive, render, ui
 from shinywidgets import output_widget, render_widget
 
+
+##### Data #####
+
 raw_data_trash = pd.read_csv("test_data_trash.csv")
 raw_data_biod = pd.read_csv("test_data_biod.csv")
+
+
+##### UI #####
 
 app_ui = ui.page_fluid(
     ui.layout_columns(
@@ -23,12 +29,14 @@ app_ui = ui.page_fluid(
 )
 
 
+##### Server #####
+
 def server(input: Inputs, output: Outputs, session: Session):
     @render_widget
     def typesOfTrashPlot():
-        df = raw_data_trash.copy()
+        df_trash = raw_data_trash.copy()
         fig = px.histogram(
-            df,
+            df_trash,
             x="Trash",
             title="Types of Trash",
             template="seaborn"
@@ -38,9 +46,9 @@ def server(input: Inputs, output: Outputs, session: Session):
 
     @render_widget
     def trashInLocationPlot():
-        df = raw_data_trash.copy()
+        df_trash = raw_data_trash.copy()
         fig = px.histogram(
-            df,
+            df_trash,
             x="Location",
             color="Trash",
             title="Trash in Location",
@@ -48,18 +56,20 @@ def server(input: Inputs, output: Outputs, session: Session):
         )
         return fig
 
+
     @render_widget
     def toxicityPlot():
-        df = raw_data_trash.copy()
-        df = df.groupby(['Location'])['Toxicity'].sum().reset_index()
+        df_trash = raw_data_trash.copy()
+        df_trash = df_trash.groupby(['Location'])['Toxicity'].sum().reset_index()
         fig = px.bar(
-            df,
+            df_trash,
             x="Location",
             y = "Toxicity",
             title="Total Toxicity",
             template="seaborn"
         )
         return fig
+
 
     @render_widget
     def toxicityOnBiodPlot():
