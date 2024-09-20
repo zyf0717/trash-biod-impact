@@ -1,4 +1,4 @@
-# Trash, Pollution and Biodiversity App
+# Pollution, Toxicity and Biodiversity App
 
 Prerequisites:
 
