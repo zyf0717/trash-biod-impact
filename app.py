@@ -13,6 +13,12 @@ from shinywidgets import output_widget, render_widget
 raw_data_trash = pd.read_csv("test_data_trash.csv")
 raw_data_biod = pd.read_csv("test_data_biod.csv")
 
+# Remove leading and trailing whitespace
+raw_data_trash['Location'] = raw_data_trash['Location'].str.strip()
+raw_data_trash['Trash'] = raw_data_trash['Trash'].str.strip()
+raw_data_biod['Location'] = raw_data_biod['Location'].str.strip()
+raw_data_biod['Species'] = raw_data_biod['Species'].str.strip()
+
 # Convert certain columns to categorical
 raw_data_trash['Location'] = raw_data_trash['Location'].astype('category')
 raw_data_trash['Trash'] = raw_data_trash['Trash'].astype('category')
