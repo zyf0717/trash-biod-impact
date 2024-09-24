@@ -7,17 +7,28 @@ from shiny import App, Inputs, Outputs, Session, reactive, render, ui
 from shinywidgets import output_widget, render_widget
 
 
-##### Data #####
+##### Read data from CSVs #####
 
-# Read CSVs
+woc_data_df = pd.read_csv("woc_data.csv")
 trash_toxicity_dim = pd.read_csv("trash_toxicity_dim.csv")
-trash_amount_fact = pd.read_csv("trash_amount_fact.csv")
-trash_biod_fact = pd.read_csv("trash_biod_fact.csv")
-trash_location_input = pd.read_csv("trash_location_all.csv")  # To replace with input data "input_data.csv"
+data_entry = pd.read_csv("trash_location_all.csv")  # To replace with input data "input_data.csv"
+
+
+##### Data Modeling #####
+
+trash_amount_fact = woc_data_df[['trash_type', 'location', 'ecosystem_impacted', 'trash_amount']]
+trash_amount_fact = trash_amount_fact.dropna()
+trash_amount_fact['trash_amount'] = trash_amount_fact['trash_amount'].astype(int)
+
+trash_biod_fact = woc_data_df.drop(['trash_amount'], axis=1).reset_index(drop=True)
+trash_biod_fact['individuals_affected'] = trash_biod_fact['individuals_affected'].astype(int)
 
 # Left join to keep only items found in input_data
-trash_amount_df = trash_location_input.merge(trash_amount_fact, how='left', on=['trash_type', 'location'])
-trash_biod_df = trash_location_input.merge(trash_biod_fact, how='left', on=['trash_type', 'location'])
+trash_amount_df = data_entry.merge(trash_amount_fact, how='left', on=['trash_type', 'location'])
+trash_biod_df = data_entry.merge(trash_biod_fact, how='left', on=['trash_type', 'location'])
+
+trash_location_df = trash_biod_fact[['trash_type', 'location']]
+trash_location_df = trash_location_df.drop_duplicates().reset_index(drop=True)
 
 # Convert certain columns to categorical
 categorical_columns = ['trash_type', 'location', 'ecosystem_impacted', 'species_impacted']
@@ -55,13 +66,22 @@ app_ui = ui.page_fluid(
                 col_widths=[6, 12]
             )
         ),
-        # ui.card(
-        #     ui.card_header("Total Toxicity"),
-        #     output_widget("toxicityPlot")
-        # ),
         ui.card(
-            ui.card_header("Impact on Biodiversity"),
-            output_widget("trashOnBiodPlot")
+            ui.card_header("Exposure to Types of Trash"),
+            ui.layout_columns(
+                # ui.input_select(
+                #     id="ImpactOnBiodSelector",
+                #     label=None,
+                #     choices={"trash_type": "Trash Type", "total_toxicity": "Toxicity"},
+                #     selected="trash_type"
+                # ),
+                output_widget("trashTypeOnBiodPlot"),
+                col_widths=[12]
+            )
+        ),
+        ui.card(
+            ui.card_header("Total Exposure"),
+            output_widget("totalExposurePlot")
         ),
         # ui.card(
         #     ui.card_header("Toxicity at Location"),
@@ -71,7 +91,7 @@ app_ui = ui.page_fluid(
         #     ui.card_header("Toxicity at Location"),
         #     ui.output_data_frame("toxicityOnBiodTbl")
         # ),
-        col_widths=[12, 6, 6, 6]
+        col_widths=[12, 6, 6, 6, 6]
     )
 )
 
@@ -134,30 +154,12 @@ def server(input: Inputs, output: Outputs, session: Session):
         return fig
 
 
-    # @render_widget
-    # def toxicityPlot():
-    #     trash_df = raw_data_trash.copy()
-    #     trash_df = trash_df.groupby(['Location', 'Trash'], observed=False)['Toxicity'].sum().reset_index()
-    #     trash_df = trash_df.sort_values(by=['Trash'])
-    #     fig = px.bar(
-    #         trash_df,
-    #         x="Location",
-    #         y="Toxicity",
-    #         color="Trash",
-    #         template="seaborn"
-    #     )
-    #     fig.update_layout(
-    #         xaxis={'categoryorder':'category ascending'}
-    #     )
-    #     return fig
-
-
     @render_widget
-    def trashOnBiodPlot():
-        trash_df_effect = trash_biod_df.groupby(['trash_type', 'species_impacted'], observed=False)['individuals_affected'].sum().reset_index()
+    def trashTypeOnBiodPlot():
+        trash_df = trash_biod_df.groupby(['trash_type', 'species_impacted'], observed=False)['individuals_affected'].sum().reset_index()
 
         fig = px.bar(
-            trash_df_effect,
+            trash_df,
             x="trash_type",
             y="individuals_affected",
             color="species_impacted",
@@ -165,8 +167,35 @@ def server(input: Inputs, output: Outputs, session: Session):
         )
         fig.update_layout(
             xaxis={'categoryorder':'category ascending'},
-            xaxis_title="Trash Type",
-            yaxis_title="Trash Amount",
+            xaxis_title=None,
+            yaxis_title=None,
+        )
+        return fig
+    
+
+    @render_widget
+    def totalExposurePlot():
+        trash_df = trash_biod_df.drop(columns=['ecosystem_impacted'])
+        trash_df = trash_df.merge(trash_amount_fact, how='left', on=['trash_type', 'location'])
+        trash_df = trash_df.merge(trash_toxicity_dim, how='left', on='trash_type')
+        trash_df['total_toxicity'] = trash_df['toxicity_level'] * trash_df['trash_amount']
+        trash_df = trash_df.drop(columns=['location', 'ecosystem_impacted', 'trash_type', 'toxicity_level'])
+        trash_df = trash_df.groupby(['species_impacted'], observed=True).sum().reset_index()
+        trash_df['total_trash'] = trash_df['trash_amount']
+
+        fig = px.scatter(
+            trash_df,
+            x="total_trash",
+            y="total_toxicity",
+            color="species_impacted",
+            size="individuals_affected",
+            log_x=True,
+            log_y=True,
+            template="seaborn"
+        )
+        fig.update_layout(
+            xaxis_title="Total Trash (log scale)",
+            yaxis_title="Total Toxicity (log scale)",
         )
         return fig
 
