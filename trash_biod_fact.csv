@@ -1,0 +1,59 @@
+trash_type,location,ecosystem_impacted,species_impacted,individuals_affected
+Plastic Bags,Coastal A,Coral Reefs,Sea Turtle,1000
+Plastic Bags,Coastal B,Coral Reefs,Sea Turtle,800
+Plastic Bags,Coastal B,Coral Reefs,Albatross,90000
+Plastic Bags,Coastal C,Mangroves,Fish,20000
+Fishing Nets,Ocean A,Seafloor,Whale,500
+Fishing Nets,Ocean C,Seafloor,Whale,1000
+Fishing Nets,Ocean A,Seafloor,Dolphin,2500
+Fishing Nets,Coastal B,Coral Reefs,Sea Turtle,1200
+Fishing Nets,Ocean B,Seafloor,Small Fish,300000
+Fishing Nets,Coastal A,Sea Shore,Sea Bird,60
+Fishing Nets,Coastal B,Sea Shore,Horseshoe Crab,100
+Fishing Nets,Coastal B,Coral Reefs,Small Shark,5000
+Plastic Bottles,Coastal B,Coral Reefs,Fish,200000
+Plastic Bottles,Coastal C,Coral Reefs,Fish,300000
+Plastic Bottles,Coastal C,Coral Reefs,Eel,3000
+Plastic Bottles,Beach A,Beach,Sea Snail,1000000
+Plastic Bottles,Beach C,Beach,Sea Snail,500000
+Plastic Bottles,Beach B,Beach,Hermit Crab,20000
+Plastic Bottles,Beach A,Beach,Albatross,140000
+Cigarette Butts,Beach A,Beach,Ghost Crab,100000
+Cigarette Butts,Beach A,Beach,Fiddler Crab,30000
+Cigarette Butts,Beach B,Beach,Fiddler Crab,500000
+Cigarette Butts,Beach B,Beach,Ghost Crab,20000
+Cigarette Butts,Beach B,Beach,Sand Bubbler Crab,750000
+Cigarette Butts,Beach B,Beach,Shore Bird,1000
+Cigarette Butts,Beach C,Beach,Ghost Crab,350000
+Cigarette Butts,Beach C,Beach,Fish,2000
+Microplastics,Beach B,Beach,Shore Bird,30000
+Microplastics,Beach C,Beach,Shore Bird,20000
+Microplastics,Ocean C,Pelagic zone,Zooplankton,5000000
+Microplastics,Ocean A,Pelagic zone,Zooplankton,4000000
+Microplastics,Ocean B,Pelagic zone,Fish,1000000
+Microplastics,Ocean A,Pelagic zone,Fish,5000000
+Aluminium Cans,Beach C,Seagrass,Conch,500000
+Aluminium Cans,Beach A,Seagrass,Spiny Lobster,100000
+Aluminium Cans,Coastal A,Coral Reefs,Lionfish,200000
+Aluminium Cans,Beach B,Seagrass,Hermit Crab,5000000
+Aluminium Cans,Coastal B,Coral Reefs,Fish,30000
+Aluminium Cans,Coastal C,Coral Reefs,Eel,2000
+Aluminium Cans,Coastal C,Coral Reefs,Fish,10000
+Plastic Straws,Beach A,Beach,Turtle,2500
+Plastic Straws,Beach B,Beach,Sea Bird,40000
+Plastic Straws,Beach C,Beach,Atlantic Puffin,250000
+Plastic Straws,Ocean A,Open Sea,Fish,100000
+Plastic Straws,Ocean B,Open Sea,Dolphin,20000
+Plastic Straws,Ocean B,Open Sea,Whale,250
+Plastic Straws,Coastal B,Mangroves,Mangrove Crab,3000
+Styrofoam,Coastal C,Mangroves,Horseshoe Crab,150000
+Styrofoam,Coastal A,Mangroves,Horseshoe Crab,20000
+Styrofoam,Beach B,Beach,Horseshoe Crab,1000
+Styrofoam,Beach B,Beach,Sea Bird,4000
+Styrofoam,Beach C,Beach,Sea Bird,3000
+Styrofoam,Beach A,Beach,Sea Bird,10000
+Glass Bottles,Beach A,Beach,Sea Mussels,20000
+Glass Bottles,Beach A,Rocky Shoreline,Sea Mussels,50000
+Glass Bottles,Beach C,Rocky Shoreline,Sea Mussels,2400
+Glass Bottles,Beach B,Rocky Shoreline,Otters,5000
+Glass Bottles,Beach B,Rocky Shoreline,Sea snails,2000000

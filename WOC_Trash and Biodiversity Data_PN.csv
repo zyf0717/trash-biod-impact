@@ -1,0 +1,59 @@
+trash_type,location,ecosystem_impacted,species_impacted,individuals_affected,trash_amount,toxicity_level
+Plastic Bags,Coastal A,Coral Reefs,Sea Turtle,"1,000"," 3,000,000 ",5
+Plastic Bags,Coastal B,Coral Reefs,Sea Turtle,800," 2,000,000 ",5
+Plastic Bags,Coastal B,Coral Reefs,Albatross,"90,000",,5
+Plastic Bags,Coastal C,Mangroves,Fish,"20,000"," 1,500,000 ",5
+Fishing Nets,Ocean A,Seafloor,Whale,500," 240,000 ",3
+Fishing Nets,Ocean C,Seafloor,Whale,"1,000"," 450,000 ",3
+Fishing Nets,Ocean A,Seafloor,Dolphin,"2,500",,3
+Fishing Nets,Coastal B,Coral Reefs,Sea Turtle,"1,200"," 555,000 ",3
+Fishing Nets,Ocean B,Seafloor,Small Fish,"300,000"," 2,000,000 ",3
+Fishing Nets,Coastal A,Sea Shore,Sea Bird,60,,3
+Fishing Nets,Coastal B,Sea Shore,Horseshoe Crab,100,,3
+Fishing Nets,Coastal B,Coral Reefs,Small Shark,"5,000",,4
+Plastic Bottles,Coastal B,Coral Reefs,Fish,"200,000"," 10,000 ",4
+Plastic Bottles,Coastal C,Coral Reefs,Fish,"300,000"," 20,000 ",4
+Plastic Bottles,Coastal C,Coral Reefs,Eel,"3,000",,4
+Plastic Bottles,Beach A,Beach,Sea Snail,"1,000,000"," 14,000 ",4
+Plastic Bottles,Beach C,Beach,Sea Snail,"500,000"," 25,000 ",4
+Plastic Bottles,Beach B,Beach,Hermit Crab,"20,000"," 50,000 ",4
+Plastic Bottles,Beach A,Beach,Albatross,"140,000",,4
+Cigarette Butts,Beach A,Beach,Ghost Crab,"100,000"," 10,000,000 ",4
+Cigarette Butts,Beach A,Beach,Fiddler Crab,"30,000",,4
+Cigarette Butts,Beach B,Beach,Fiddler Crab,"500,000"," 20,000,000 ",4
+Cigarette Butts,Beach B,Beach,Ghost Crab,"20,000",,4
+Cigarette Butts,Beach B,Beach,Sand Bubbler Crab,"750,000",,4
+Cigarette Butts,Beach B,Beach,Shore Bird,"1,000",,4
+Cigarette Butts,Beach C,Beach,Ghost Crab,"350,000"," 15,000,000 ",4
+Cigarette Butts,Beach C,Beach,Fish,"2,000",,4
+Microplastics,Beach B,Beach,Shore Bird,"30,000"," 10,000,000 ",5
+Microplastics,Beach C,Beach,Shore Bird,"20,000"," 8,000,000 ",5
+Microplastics,Ocean C,Pelagic zone,Zooplankton,"5,000,000"," 2,000,000 ",5
+Microplastics,Ocean A,Pelagic zone,Zooplankton,"4,000,000"," 20,000,000 ",5
+Microplastics,Ocean B,Pelagic zone,Fish,"1,000,000"," 600,000 ",5
+Microplastics,Ocean A,Pelagic zone,Fish,"5,000,000",,5
+Aluminium Cans,Beach C,Seagrass,Conch,"500,000"," 2,000,000 ",3
+Aluminium Cans,Beach A,Seagrass,Spiny Lobster,"100,000"," 400,000 ",3
+Aluminium Cans,Coastal A,Coral Reefs,Lionfish,"200,000"," 540,000 ",3
+Aluminium Cans,Beach B,Seagrass,Hermit Crab,"5,000,000"," 240,000 ",3
+Aluminium Cans,Coastal B,Coral Reefs,Fish,"30,000"," 650,000 ",3
+Aluminium Cans,Coastal C,Coral Reefs,Eel,"2,000"," 350,000 ",3
+Aluminium Cans,Coastal C,Coral Reefs,Fish,"10,000",,3
+Plastic Straws,Beach A,Beach,Turtle,"2,500"," 1,000,000 ",4
+Plastic Straws,Beach B,Beach,Sea Bird,"40,000"," 54,000 ",4
+Plastic Straws,Beach C,Beach,Atlantic Puffin,"250,000"," 850,000 ",4
+Plastic Straws,Ocean A,Open Sea,Fish,"100,000"," 700,000 ",4
+Plastic Straws,Ocean B,Open Sea,Dolphin,"20,000"," 35,000 ",4
+Plastic Straws,Ocean B,Open Sea,Whale,250,,4
+Plastic Straws,Coastal B,Mangroves,Mangrove Crab,"3,000"," 20,000 ",4
+Styrofoam,Coastal C,Mangroves,Horseshoe Crab,"150,000"," 10,000,000 ",5
+Styrofoam,Coastal A,Mangroves,Horseshoe Crab,"20,000"," 500,000 ",5
+Styrofoam,Beach B,Beach,Horseshoe Crab,"1,000"," 30,000 ",5
+Styrofoam,Beach B,Beach,Sea Bird,"4,000",,5
+Styrofoam,Beach C,Beach,Sea Bird,"3,000"," 250,000 ",5
+Styrofoam,Beach A,Beach,Sea Bird,"10,000"," 450,000 ",5
+Glass Bottles,Beach A,Beach,Sea Mussels,"20,000"," 20,000,000 ",2
+Glass Bottles,Beach A,Rocky Shoreline,Sea Mussels,"50,000",,2
+Glass Bottles,Beach C,Rocky Shoreline,Sea Mussels,"2,400"," 660,000 ",2
+Glass Bottles,Beach B,Rocky Shoreline,Otters,"5,000"," 850,000 ",2
+Glass Bottles,Beach B,Rocky Shoreline,Sea snails,"2,000,000",,2
