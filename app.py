@@ -11,7 +11,7 @@ from shinywidgets import output_widget, render_widget
 
 woc_data_df = pd.read_csv("woc_data.csv")
 trash_toxicity_dim = pd.read_csv("trash_toxicity_dim.csv")
-data_entry_df = pd.read_csv("data_entry.csv")  # To-do: brief usage of data_entry.csv
+data_entry_df = pd.read_csv("data_entry.csv") 
 
 
 ##### Data Modeling #####
