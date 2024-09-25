@@ -168,7 +168,7 @@ def server(input: Inputs, output: Outputs, session: Session):
             yaxis_title=None,
         )
         return fig
-    
+
 
     @render_widget
     def totalExposurePlot():
