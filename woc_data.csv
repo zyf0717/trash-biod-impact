@@ -28,10 +28,10 @@ Cigarette Butts,Beach C,Beach,Ghost Crab,350000,15000000
 Cigarette Butts,Beach C,Beach,Fish,2000,
 Microplastics,Beach B,Beach,Shore Bird,30000,10000000
 Microplastics,Beach C,Beach,Shore Bird,20000,8000000
-Microplastics,Ocean C,Pelagic Zone,Zooplankton,5000000,2000000
-Microplastics,Ocean A,Pelagic Zone,Zooplankton,4000000,20000000
-Microplastics,Ocean B,Pelagic Zone,Fish,1000000,600000
-Microplastics,Ocean A,Pelagic Zone,Fish,5000000,
+Microplastics,Ocean C,Open Sea,Zooplankton,5000000,2000000
+Microplastics,Ocean A,Open Sea,Zooplankton,4000000,20000000
+Microplastics,Ocean B,Open Sea,Fish,1000000,600000
+Microplastics,Ocean A,Open Sea,Fish,5000000,
 Aluminium Cans,Beach C,Seagrass,Conch,500000,2000000
 Aluminium Cans,Beach A,Seagrass,Spiny Lobster,100000,400000
 Aluminium Cans,Coastal A,Coral Reefs,Lionfish,200000,540000
