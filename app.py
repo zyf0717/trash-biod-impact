@@ -25,12 +25,14 @@ trash_biod_fact['individuals_affected'] = trash_biod_fact['individuals_affected'
 
 # Left join to keep only items found in input_data
 data_entry_df = data_entry_df.dropna().reset_index(drop=True)
-data_entry_df = data_entry_df.drop(columns=['indicator'])
-trash_amount_df = data_entry_df.merge(trash_amount_fact, how='left', on=['trash_type', 'location'])
-trash_biod_df = data_entry_df.merge(trash_biod_fact, how='left', on=['trash_type', 'location'])
+trash_amount_df = trash_amount_fact[trash_amount_fact['trash_type'].isin(data_entry_df['trash_type'])]
+trash_amount_df = trash_amount_df.sort_values(by=['trash_type']).reset_index(drop=True)
+trash_biod_df = trash_biod_fact[trash_biod_fact['trash_type'].isin(data_entry_df['trash_type'])]
+trash_biod_df = trash_biod_df.sort_values(by=['trash_type']).reset_index(drop=True)
 
 trash_location_df = trash_biod_fact[['trash_type', 'location']]
-trash_location_df = trash_location_df.drop_duplicates().reset_index(drop=True)
+trash_location_df = trash_location_df.drop_duplicates()
+trash_location_df = trash_location_df.sort_values(by=['trash_type']).reset_index(drop=True)
 
 # Convert certain columns to categorical
 categorical_columns = ['trash_type', 'location', 'ecosystem_impacted', 'species_impacted']
@@ -132,6 +134,7 @@ def server(input: Inputs, output: Outputs, session: Session):
         trash_df['total_toxicity'] = trash_df['toxicity_level'] * trash_df['trash_amount']
 
         trash_df = trash_df.groupby([input.toxicityLevelSelector(), 'trash_type'], observed=False)['total_toxicity'].sum().reset_index()
+        trash_df = trash_df.sort_values(by=['trash_type']).reset_index(drop=True)
 
         fig = px.bar(
             trash_df,
