@@ -11,7 +11,7 @@ from shinywidgets import output_widget, render_widget
 
 woc_data_df = pd.read_csv("woc_data.csv")
 trash_toxicity_dim = pd.read_csv("trash_toxicity_dim.csv")
-data_entry = pd.read_csv("trash_location_all.csv")  # To replace with input data "input_data.csv"
+data_entry_df = pd.read_csv("data_entry.csv")  # To-do: brief usage of data_entry.csv
 
 
 ##### Data Modeling #####
@@ -24,8 +24,10 @@ trash_biod_fact = woc_data_df.drop(['trash_amount'], axis=1).reset_index(drop=Tr
 trash_biod_fact['individuals_affected'] = trash_biod_fact['individuals_affected'].astype(int)
 
 # Left join to keep only items found in input_data
-trash_amount_df = data_entry.merge(trash_amount_fact, how='left', on=['trash_type', 'location'])
-trash_biod_df = data_entry.merge(trash_biod_fact, how='left', on=['trash_type', 'location'])
+data_entry_df = data_entry_df.dropna().reset_index(drop=True)
+data_entry_df = data_entry_df.drop(columns=['indicator'])
+trash_amount_df = data_entry_df.merge(trash_amount_fact, how='left', on=['trash_type', 'location'])
+trash_biod_df = data_entry_df.merge(trash_biod_fact, how='left', on=['trash_type', 'location'])
 
 trash_location_df = trash_biod_fact[['trash_type', 'location']]
 trash_location_df = trash_location_df.drop_duplicates().reset_index(drop=True)
@@ -39,7 +41,7 @@ trash_biod_df[categorical_columns] = trash_biod_df[categorical_columns].apply(la
 
 app_ui = ui.page_fluid(
     ui.layout_columns(
-        ui.card("Pollution, Toxicity and Biodiversity"),
+        ui.card("Pollution, Toxicity and Biodiversity"),  # To-do: confirm title, add more details?
         ui.card(
             ui.card_header("Amount of Trash"),
             ui.layout_columns(
@@ -107,8 +109,6 @@ def server(input: Inputs, output: Outputs, session: Session):
         if input.trashQuantitySelector() == "ecosystem_impacted":
             trash_df = trash_df.groupby(['ecosystem_impacted', 'trash_type'], observed=False)['trash_amount'].sum().reset_index()
             trash_df = trash_df.sort_values(by=['trash_type']).reset_index(drop=True)
-        elif input.trashQuantitySelector() == "location":
-            trash_df = trash_df.sort_values(by='trash_type')
 
         fig = px.bar(
             trash_df,
@@ -131,14 +131,8 @@ def server(input: Inputs, output: Outputs, session: Session):
         trash_df = trash_amount_df.merge(trash_toxicity_dim, how='left', on='trash_type')
         trash_df['total_toxicity'] = trash_df['toxicity_level'] * trash_df['trash_amount']
 
-        if input.toxicityLevelSelector() == "location":
-            trash_df = trash_df.groupby(['location', 'trash_type'], observed=False)['total_toxicity'].sum().reset_index()
-            trash_df = trash_df.sort_values(by=['trash_type']).reset_index(drop=True)
+        trash_df = trash_df.groupby([input.toxicityLevelSelector(), 'trash_type'], observed=False)['total_toxicity'].sum().reset_index()
 
-        elif input.toxicityLevelSelector() == "ecosystem_impacted":
-            trash_df = trash_df.groupby(['ecosystem_impacted', 'trash_type'], observed=False)['total_toxicity'].sum().reset_index()
-            trash_df = trash_df.sort_values(by=['trash_type']).reset_index(drop=True)
-        
         fig = px.bar(
             trash_df,
             x=input.toxicityLevelSelector(),
