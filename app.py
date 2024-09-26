@@ -206,6 +206,7 @@ def server(input: Inputs, output: Outputs, session: Session):
 
         fig.update_layout(
             xaxis={'categoryorder':'category ascending'},
+            yaxis={'categoryorder':'category ascending'},
             xaxis_title=None,
             yaxis_title=None,
             legend_title_text='Trash Type'
