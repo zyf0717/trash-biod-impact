@@ -43,7 +43,7 @@ trash_biod_df[categorical_columns] = trash_biod_df[categorical_columns].apply(la
 
 app_ui = ui.page_fluid(
     ui.layout_columns(
-        ui.card("Pollution, Toxicity and Biodiversity"),  # To-do: confirm title, add more details?
+        ui.card(ui.panel_title("Pollution, Toxicity and Biodiversity",),),
         ui.card(
             ui.card_header("Amount of Trash"),
             ui.layout_columns(
@@ -53,8 +53,18 @@ app_ui = ui.page_fluid(
                     choices={"location": "Location", "ecosystem_impacted": "Ecosystem"},
                     selected="location"
                 ),
+                ui.input_select(
+                    id="scaleTQPlot",
+                    label=None,
+                    choices={"linear": "Linear", "log": "Logarithmic"},
+                    selected="linear"
+                ),
+                ui.span(
+                    ui.input_switch("transposeTQPlot", "", False),
+                    style="position:relative; top: 6px;",
+                ),
                 output_widget("trashQuantityPlot"),
-                col_widths=[6, 12]
+                col_widths=[4, 4, 4, 12]
             )
         ),
         ui.card(
@@ -66,35 +76,56 @@ app_ui = ui.page_fluid(
                     choices={"location": "Location", "ecosystem_impacted": "Ecosystem"},
                     selected="location"
                 ),
+                ui.input_select(
+                    id="scaleTLPlot",
+                    label=None,
+                    choices={"linear": "Linear", "log": "Logarithmic"},
+                    selected="linear"
+                ),
+                ui.span(
+                    ui.input_switch("transposeTLPlot", "", False),
+                    style="position:relative; top: 6px;",
+                ),
                 output_widget("toxicityLevelPlot"),
-                col_widths=[6, 12]
+                col_widths=[4, 4, 4, 12]
             )
         ),
         ui.card(
             ui.card_header("Exposure to Types of Trash"),
             ui.layout_columns(
-                # ui.input_select(
-                #     id="ImpactOnBiodSelector",
-                #     label=None,
-                #     choices={"trash_type": "Trash Type", "total_toxicity": "Toxicity"},
-                #     selected="trash_type"
-                # ),
-                output_widget("trashTypeOnBiodPlot"),
-                col_widths=[12]
+                ui.input_select(
+                    id="scaleTBPlot",
+                    label=None,
+                    choices={"linear": "Linear", "log": "Logarithmic"},
+                    selected="linear"
+                ),
+                ui.span(
+                    ui.input_switch("transposeTBPlot", "", False),
+                    style="position:relative; top: 6px;",
+                ),
+                output_widget("trashOnBiodPlot"),
+                col_widths=[4, 4, 12]
             )
         ),
         ui.card(
             ui.card_header("Total Exposure"),
-            output_widget("totalExposurePlot")
+            ui.layout_columns(
+                ui.input_select(
+                    id="scalexTEPlot",
+                    label=None,
+                    choices={"linear": "Linear", "log": "Logarithmic"},
+                    selected="log"
+                ),
+                ui.input_select(
+                    id="scaleYTEPlot",
+                    label=None,
+                    choices={"linear": "Linear", "log": "Logarithmic"},
+                    selected="log"
+                ),
+                output_widget("totalExposurePlot"),
+                col_widths=[4, 4, 12]
+            ),
         ),
-        # ui.card(
-        #     ui.card_header("Toxicity at Location"),
-        #     ui.output_data_frame("toxicityAtLocationTbl")
-        # ),
-        # ui.card(
-        #     ui.card_header("Toxicity at Location"),
-        #     ui.output_data_frame("toxicityOnBiodTbl")
-        # ),
         col_widths=[12, 6, 6, 6, 6]
     )
 )
@@ -104,7 +135,7 @@ app_ui = ui.page_fluid(
 
 def server(input: Inputs, output: Outputs, session: Session):
     @render_widget
-    @reactive.event(input.trashQuantitySelector)
+    @reactive.event(input.trashQuantitySelector, input.transposeTQPlot, input.scaleTQPlot)
     def trashQuantityPlot():
         trash_df = trash_amount_df.copy()
 
@@ -112,23 +143,39 @@ def server(input: Inputs, output: Outputs, session: Session):
             trash_df = trash_df.groupby(['ecosystem_impacted', 'trash_type'], observed=False)['trash_amount'].sum().reset_index()
             trash_df = trash_df.sort_values(by=['trash_type']).reset_index(drop=True)
 
+        axes = [input.trashQuantitySelector(), "trash_amount"]
+        if input.transposeTQPlot():
+            axes = axes[::-1]
+
         fig = px.bar(
             trash_df,
-            x=input.trashQuantitySelector(),
-            y="trash_amount",
+            x=axes[0],
+            y=axes[1],
             color="trash_type",
             template="seaborn"
         )
+
+        if input.scaleTQPlot() == "log" and not input.transposeTQPlot():
+            fig.update_layout(
+                yaxis_type="log"
+            )
+        elif input.scaleTQPlot() == "log" and input.transposeTQPlot():
+            fig.update_layout(
+                xaxis_type="log"
+            )
+
         fig.update_layout(
             xaxis={'categoryorder':'category ascending'},
+            yaxis={'categoryorder':'category descending'},
             xaxis_title=None,
             yaxis_title=None,
+            legend_title_text='Trash Type'
         )
         return fig
 
 
     @render_widget
-    @reactive.event(input.toxicityLevelSelector)
+    @reactive.event(input.toxicityLevelSelector, input.transposeTLPlot, input.scaleTLPlot)
     def toxicityLevelPlot():
         trash_df = trash_amount_df.merge(trash_toxicity_dim, how='left', on='trash_type')
         trash_df['total_toxicity'] = trash_df['toxicity_level'] * trash_df['trash_amount']
@@ -136,41 +183,74 @@ def server(input: Inputs, output: Outputs, session: Session):
         trash_df = trash_df.groupby([input.toxicityLevelSelector(), 'trash_type'], observed=False)['total_toxicity'].sum().reset_index()
         trash_df = trash_df.sort_values(by=['trash_type']).reset_index(drop=True)
 
+        axes = [input.toxicityLevelSelector(), "total_toxicity"]
+        if input.transposeTLPlot():
+            axes = axes[::-1]
+
         fig = px.bar(
             trash_df,
-            x=input.toxicityLevelSelector(),
-            y="total_toxicity",
+            x=axes[0],
+            y=axes[1],
             color="trash_type",
             template="seaborn"
         )
+
+        if input.scaleTLPlot() == "log" and not input.transposeTLPlot():
+            fig.update_layout(
+                yaxis_type="log"
+            )
+        elif input.scaleTLPlot() == "log" and input.transposeTLPlot():
+            fig.update_layout(
+                xaxis_type="log"
+            )
+
         fig.update_layout(
             xaxis={'categoryorder':'category ascending'},
             xaxis_title=None,
             yaxis_title=None,
+            legend_title_text='Trash Type'
         )
         return fig
 
 
     @render_widget
-    def trashTypeOnBiodPlot():
+    @reactive.event(input.scaleTBPlot, input.transposeTBPlot)
+    def trashOnBiodPlot():
         trash_df = trash_biod_df.groupby(['trash_type', 'species_impacted'], observed=False)['individuals_affected'].sum().reset_index()
+
+        axes = ['trash_type', 'individuals_affected']
+        if input.transposeTBPlot():
+            axes = axes[::-1]
 
         fig = px.bar(
             trash_df,
-            x="trash_type",
-            y="individuals_affected",
+            x=axes[0],
+            y=axes[1],
             color="species_impacted",
             template="seaborn"
         )
+
+        if input.scaleTBPlot() == "log" and not input.transposeTBPlot():
+            fig.update_layout(
+                yaxis_type="log"
+            )
+        elif input.scaleTBPlot() == "log" and input.transposeTBPlot():
+            fig.update_layout(
+                xaxis_type="log"
+            )
+
         fig.update_layout(
             xaxis={'categoryorder':'category ascending'},
+            yaxis={'categoryorder':'category descending'},
             xaxis_title=None,
             yaxis_title=None,
+            legend_title_text='Species Impacted'
         )
         return fig
 
 
     @render_widget
+    @reactive.event(input.scalexTEPlot, input.scaleYTEPlot)
     def totalExposurePlot():
         trash_df = trash_biod_df.drop(columns=['ecosystem_impacted'])
         trash_df = trash_df.merge(trash_amount_fact, how='left', on=['trash_type', 'location'])
@@ -186,13 +266,22 @@ def server(input: Inputs, output: Outputs, session: Session):
             y="total_toxicity",
             color="species_impacted",
             size="individuals_affected",
-            log_x=True,
-            log_y=True,
             template="seaborn"
         )
+
+        if input.scalexTEPlot() == "log":
+            fig.update_layout(
+                xaxis_type="log"
+            )
+        if input.scaleYTEPlot() == "log":
+            fig.update_layout(
+                yaxis_type="log"
+            )
+
         fig.update_layout(
             xaxis_title="Total Trash (log scale)",
             yaxis_title="Total Toxicity (log scale)",
+            legend_title_text="Species Impacted"
         )
         return fig
 
