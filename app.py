@@ -43,7 +43,9 @@ trash_biod_df[categorical_columns] = trash_biod_df[categorical_columns].apply(la
 
 app_ui = ui.page_fluid(
     ui.layout_columns(
-        ui.card(ui.panel_title("Pollution, Toxicity and Biodiversity",),),
+        ui.card(
+            ui.panel_title("Pollution and Toxicity on Biodiversity")
+        ),
         ui.card(
             ui.card_header("Amount of Trash"),
             ui.layout_columns(
@@ -206,7 +208,7 @@ def server(input: Inputs, output: Outputs, session: Session):
 
         fig.update_layout(
             xaxis={'categoryorder':'category ascending'},
-            yaxis={'categoryorder':'category ascending'},
+            yaxis={'categoryorder':'category descending'},
             xaxis_title=None,
             yaxis_title=None,
             legend_title_text='Trash Type'
